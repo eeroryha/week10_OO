@@ -1,0 +1,87 @@
+package com.example.week10;
+
+import android.os.Bundle;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.EditText;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+
+public class MainActivity extends AppCompatActivity {
+
+    String sitename;
+    String currentUrl;
+    Button b;
+    WebView web;
+    Button ref;
+    EditText inp;
+    Button ind;
+    Button fwd;
+    Button back;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        //https://developer.android.com/reference/android/webkit/WebView
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        web=findViewById(R.id.webView);
+        web.setWebViewClient(new WebViewClient());
+        web.getSettings().setJavaScriptEnabled(true);
+        web.getSettings().setAllowFileAccess(true);
+        inp=findViewById(R.id.editUrl);
+        ref=findViewById(R.id.refresh);
+        fwd=findViewById(R.id.fwd);
+        back=findViewById(R.id.back);
+        b=findViewById(R.id.button);
+        ind=findViewById(R.id.index);
+        b.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view){
+                sitename=inp.getText().toString();
+                if(sitename.equals("index.html")){
+                    web.loadUrl("file:///android_asset/index.html");
+                }
+                else{
+                    web.loadUrl("http://www."+sitename);
+                }
+                //https://stackoverflow.com/questions/13593069/androidhide-keyboard-after-button-click
+                InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(view.getApplicationWindowToken(),0);
+            }
+        });
+
+        ref.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                currentUrl=web.getUrl();
+                web.loadUrl(currentUrl);
+            }
+        });
+        ind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                web.loadUrl("file:///android_asset/index.html");
+            }
+        });
+
+        fwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(web.canGoForward()){
+                    web.goForward();
+                }
+            }
+        });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(web.canGoBack()){
+                    web.goBack();
+                }
+            }
+        });
+    }
+}
